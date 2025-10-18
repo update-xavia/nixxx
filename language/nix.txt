@@ -1,0 +1,1 @@
+unknown=Command "{command}" does not exist, type {prefix}help to see all available commands
