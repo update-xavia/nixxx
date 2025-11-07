@@ -143,10 +143,12 @@ async function getAppStateWithProtection(APPSTATE_PATH, appState, isReplit) {
                     );
                     objAppState = aes.decrypt(appState, APPSTATE_SECRET_KEY);
                     if (isJSON(objAppState))
-                        objAppState = JSON.parse(objAppState); // idk why, but sometimes the decrypt function does not parse it
+                        objAppState = JSON.parse(objAppState);
                 } catch (err) {
+                    logger.error("Failed to decrypt appstate. The appstate may be corrupted or the key is wrong.");
+                    logger.warn("Please get a fresh appstate from Facebook and replace appstate.json");
                     console.error(err);
-                    throw getLang("modules.checkAppstate.parsingError");
+                    throw new Error("Appstate decryption failed. Get a fresh appstate.");
                 }
             } else {
                 objAppState = JSON.parse(appState);

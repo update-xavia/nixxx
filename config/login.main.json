@@ -1,4 +1,5 @@
+
 {
-    "email": "",
-    "password": ""
+    "email": "your_facebook_email@example.com",
+    "password": "your_facebook_password"
 }
