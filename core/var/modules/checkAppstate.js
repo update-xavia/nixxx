@@ -145,10 +145,19 @@ async function getAppStateWithProtection(APPSTATE_PATH, appState, isReplit) {
                     if (isJSON(objAppState))
                         objAppState = JSON.parse(objAppState);
                 } catch (err) {
-                    logger.error("Failed to decrypt appstate. The appstate may be corrupted or the key is wrong.");
-                    logger.warn("Please get a fresh appstate from Facebook and replace appstate.json");
-                    console.error(err);
-                    throw new Error("Appstate decryption failed. Get a fresh appstate.");
+                    logger.warn("Decryption failed. Trying to use as plain JSON...");
+                    try {
+                        objAppState = JSON.parse(appState);
+                        if (objAppState.length > 0) {
+                            logger.custom("Using plain appstate, will encrypt on next login", "LOGIN");
+                        } else {
+                            throw new Error("Empty appstate");
+                        }
+                    } catch (parseErr) {
+                        logger.error("Failed to decrypt appstate. The appstate may be corrupted or the key is wrong.");
+                        logger.warn("Please get a fresh appstate from Facebook and replace appstate.json with an array of cookies");
+                        throw new Error("Appstate decryption failed. Get a fresh appstate as JSON array.");
+                    }
                 }
             } else {
                 objAppState = JSON.parse(appState);
